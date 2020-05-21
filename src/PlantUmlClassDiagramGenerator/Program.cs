@@ -25,6 +25,8 @@ namespace PlantUmlClassDiagramGenerator
             ["-ignore"] = OptionType.Value,
             ["-excludePaths"] = OptionType.Value,
             ["-createAssociation"] = OptionType.Switch,
+            ["-fields"] = OptionType.Switch,
+            ["-constructor"] = OptionType.Switch,
             ["-allInOne"] = OptionType.Switch
         };
 
@@ -82,12 +84,11 @@ namespace PlantUmlClassDiagramGenerator
                 {
                     var tree = CSharpSyntaxTree.ParseText(SourceText.From(stream));
                     var root = tree.GetRoot();
-                    Accessibilities ignoreAcc = GetIgnoreAccessibilities(parameters);
 
                     using (var filestream = new FileStream(outputFileName, FileMode.Create, FileAccess.Write))
                     using (var writer = new StreamWriter(filestream))
                     {
-                        var gen = new ClassDiagramGenerator(writer, "    ", ignoreAcc, parameters.ContainsKey("-createAssociation"));
+                        var gen = new ClassDiagramGenerator(writer, GetOptions(parameters));
                         gen.Generate(root);
                     }
                 }
@@ -99,6 +100,13 @@ namespace PlantUmlClassDiagramGenerator
             }
             return true;
         }
+
+        private static ClassDiagramGeneratorOptions GetOptions(Dictionary<string, string> parameters)
+            => new ClassDiagramGeneratorOptions {
+                        Indent = "   ", IgnoreMemberAccessibilities = GetIgnoreAccessibilities(parameters),
+                        FieldAssociation = parameters.ContainsKey("-createAssociation") | parameters.ContainsKey("-fields"),
+                        ConstructorAssociation = parameters.ContainsKey("-constructor"),
+                    };
 
         private static bool GeneratePlantUmlFromDir(Dictionary<string, string> parameters)
         {
@@ -168,7 +176,7 @@ namespace PlantUmlClassDiagramGenerator
                         using (var filestream = new FileStream(outputFile, FileMode.Create, FileAccess.Write))
                         using (var writer = new StreamWriter(filestream))
                         {
-                            var gen = new ClassDiagramGenerator(writer, "    ", ignoreAcc, parameters.ContainsKey("-createAssociation"));
+                            var gen = new ClassDiagramGenerator(writer, GetOptions(parameters));
                             gen.Generate(root);
                         }
                     }

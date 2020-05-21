@@ -42,12 +42,16 @@ namespace PlantUmlClassDiagramGenerator.Library
             var subNode = node.Parent as BaseTypeDeclarationSyntax;
 
             if (baseNode == null || subNode == null) return;
+            AddAssociationFrom(subNode, baseNode, field.Initializer, field.Identifier);
+        }
 
-            var symbol = field.Initializer == null ? "-->" : "o->";
+        public void AddAssociationFrom(ConstructorDeclarationSyntax node, ParameterSyntax parameter)
+        {
+            var baseNode = parameter.Type as SimpleNameSyntax;
+            var subNode = node.Parent as BaseTypeDeclarationSyntax;
 
-            var baseName = TypeNameText.From(baseNode);
-            var subName = TypeNameText.From(subNode);
-            _items.Add(new Relationship(subName, baseName, symbol, "", field.Identifier.ToString() + baseName.TypeArguments));
+            if (baseNode == null || subNode == null) return;
+            AddAssociationFrom(subNode, baseNode, parameter.Default, parameter.Identifier);
         }
 
         public void AddAssociationFrom(PropertyDeclarationSyntax node)
@@ -56,12 +60,15 @@ namespace PlantUmlClassDiagramGenerator.Library
             var subNode = node.Parent as BaseTypeDeclarationSyntax;
 
             if (baseNode == null || subNode == null) return;
+            AddAssociationFrom(subNode, baseNode, node.Initializer, node.Identifier);
+        }
 
-            var symbol = node.Initializer == null ? "-->" : "o->";
-
+        private void AddAssociationFrom(BaseTypeDeclarationSyntax subNode, SimpleNameSyntax baseNode, EqualsValueClauseSyntax init, SyntaxToken identifier) 
+        {
+            var symbol = init == null ? "-->" : "o->";
             var baseName = TypeNameText.From(baseNode);
             var subName = TypeNameText.From(subNode);
-            _items.Add(new Relationship(subName, baseName, symbol, "", node.Identifier.ToString() + baseName.TypeArguments));
+            _items.Add(new Relationship(subName, baseName, symbol, "", identifier.ToString() + baseName.TypeArguments));
         }
 
         public IEnumerator<Relationship> GetEnumerator()

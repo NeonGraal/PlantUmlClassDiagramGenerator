@@ -1,0 +1,10 @@
+﻿@startuml
+interface IA {
+    Merge(other:IA) : IA
+}
+class ConstructorInterface {
+    + ConstructorInterface(iA:IA)
+    + Merging(other:IA) : IA
+}
+ConstructorInterface --> "iA" IA
+@enduml

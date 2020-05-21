@@ -34,13 +34,25 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="testData\ConstructorInterface.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="uml\all.puml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="uml\ConstructorAssoc.puml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="uml\GenericsType.puml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="uml\public.puml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="uml\FieldAssoc.puml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="uml\withoutPrivate.puml">

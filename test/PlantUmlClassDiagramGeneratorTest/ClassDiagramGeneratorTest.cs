@@ -20,7 +20,7 @@ namespace PlantUmlClassDiagramGeneratorTest
             var output = new StringBuilder();
             using (var writer = new StringWriter(output))
             {
-                var gen = new ClassDiagramGenerator(writer, "    ");
+                var gen = new ClassDiagramGenerator(writer, new ClassDiagramGeneratorOptions { Indent = "    " });
                 gen.Generate(root);
             }
 
@@ -40,9 +40,11 @@ namespace PlantUmlClassDiagramGeneratorTest
             var output = new StringBuilder();
             using (var writer = new StringWriter(output))
             {
-                var gen = new ClassDiagramGenerator(writer, "    ",
-                    Accessibilities.Private | Accessibilities.Internal
-                    | Accessibilities.Protected | Accessibilities.ProtectedInternal);
+                var gen = new ClassDiagramGenerator(writer, new ClassDiagramGeneratorOptions { 
+                        Indent = "    ",
+                        IgnoreMemberAccessibilities = Accessibilities.Private | Accessibilities.Internal
+                                                    | Accessibilities.Protected | Accessibilities.ProtectedInternal
+                    });
                 gen.Generate(root);
             }
 
@@ -62,7 +64,10 @@ namespace PlantUmlClassDiagramGeneratorTest
             var output = new StringBuilder();
             using (var writer = new StringWriter(output))
             {
-                var gen = new ClassDiagramGenerator(writer, "    ", Accessibilities.Private);
+                var gen = new ClassDiagramGenerator(writer, new ClassDiagramGeneratorOptions { 
+                        Indent = "    ",
+                        IgnoreMemberAccessibilities =  Accessibilities.Private
+                    });
                 gen.Generate(root);
             }
 
@@ -82,8 +87,11 @@ namespace PlantUmlClassDiagramGeneratorTest
             var output = new StringBuilder();
             using (var writer = new StringWriter(output))
             {
-                var gen = new ClassDiagramGenerator(writer, "    ", Accessibilities.Private | Accessibilities.Internal
-                                                                                            | Accessibilities.Protected | Accessibilities.ProtectedInternal);
+                var gen = new ClassDiagramGenerator(writer, new ClassDiagramGeneratorOptions { 
+                        Indent = "    ",
+                        IgnoreMemberAccessibilities = Accessibilities.Private | Accessibilities.Internal 
+                                                    | Accessibilities.Protected | Accessibilities.ProtectedInternal
+                    });
                 gen.Generate(root);
             }
 
@@ -103,12 +111,58 @@ namespace PlantUmlClassDiagramGeneratorTest
             var output = new StringBuilder();
             using (var writer = new StringWriter(output))
             {
-                var gen = new ClassDiagramGenerator(writer, "    ", Accessibilities.Private | Accessibilities.Internal
-                                                                                            | Accessibilities.Protected | Accessibilities.ProtectedInternal);
+                var gen = new ClassDiagramGenerator(writer, new ClassDiagramGeneratorOptions { 
+                        Indent = "    ",
+                        IgnoreMemberAccessibilities = Accessibilities.Private | Accessibilities.Internal
+                                                    | Accessibilities.Protected | Accessibilities.ProtectedInternal
+                    });
                 gen.Generate(root);
             }
 
             var expected = ConvertNewLineCode(File.ReadAllText(Path.Combine("uml", "nullableType.puml")), Environment.NewLine);
+            var actual = output.ToString();
+            Console.Write(actual);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void GenerateTest_FieldAssociations()
+        {
+            var code = File.ReadAllText("testData\\ConstructorInterface.cs");
+            var tree = CSharpSyntaxTree.ParseText(code);
+            var root = tree.GetRoot();
+
+            var output = new StringBuilder();
+            using (var writer = new StringWriter(output))
+            {
+                var gen = new ClassDiagramGenerator(writer, new ClassDiagramGeneratorOptions { Indent = "    " });
+                gen.Generate(root);
+            }
+
+            var expected = ConvertNewLineCode(File.ReadAllText(@"uml\FieldAssoc.puml"), Environment.NewLine);
+            var actual = output.ToString();
+            Console.Write(actual);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void GenerateTest_ConstructorAssociations()
+        {
+            var code = File.ReadAllText("testData\\ConstructorInterface.cs");
+            var tree = CSharpSyntaxTree.ParseText(code);
+            var root = tree.GetRoot();
+
+            var output = new StringBuilder();
+            using (var writer = new StringWriter(output))
+            {
+                var gen = new ClassDiagramGenerator(writer, new ClassDiagramGeneratorOptions { Indent = "    ", 
+                        IgnoreMemberAccessibilities = Accessibilities.Private,
+                        FieldAssociation = false, ConstructorAssociation = true
+                    });
+                gen.Generate(root);
+            }
+
+            var expected = ConvertNewLineCode(File.ReadAllText(@"uml\ConstructorAssoc.puml"), Environment.NewLine);
             var actual = output.ToString();
             Console.Write(actual);
             Assert.AreEqual(expected, actual);

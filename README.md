@@ -19,7 +19,7 @@ dotnet tool install --global PlantUmlClassDiagramGenerator --version 1.2.0
 Run the "puml-gen" command.
 
 ```bat
-puml-gen InputPath [OutputPath] [-dir] [-public | -ignore IgnoreAccessibilities] [-excludePaths ExcludePathList] [-createAssociation]
+puml-gen InputPath [OutputPath] [-dir] [-public | -ignore IgnoreAccessibilities] [-excludePaths ExcludePathList] [-createAssociation] [-fields] [-constructor]
 ```
 
 - InputPath: (Required) Sets a input source file or directory name.
@@ -30,7 +30,9 @@ puml-gen InputPath [OutputPath] [-dir] [-public | -ignore IgnoreAccessibilities]
 - -ignore: (Optional) Specify the accessibility of members to ignore, with a comma separated list.
 - -excludePaths: (Optional) Specify the exclude file and directory.   
   Specifies a relative path from the "InputPath", with a comma separated list.
-- -createAssociation: (Optional) Create object associations from references of fields and properites.
+- -createAssociation: (Obselete) Create object associations from references of fields and properites.
+- -fields: (Optional) Create object associations from references of fields and properites.
+- -constructor: (Optional) Create object associations from references constructor parameters.
 - -allInOne: (Optional) Only if -dir is set: copy the output of all diagrams to file include.puml (this allows a PlanUMLServer to render it).
 
 
@@ -40,7 +42,7 @@ puml-gen C:\Source\App1\ClassA.cs -public
 ```
 
 ```bat
-puml-gen C:\Source\App1 C:\PlantUml\App1 -dir -ignore Private,Protected -createAssociation -allInOne
+puml-gen C:\Source\App1 C:\PlantUml\App1 -dir -ignore Private,Protected -fields -allInOne
 ```
 
 ```bat
@@ -352,9 +354,10 @@ IInterfaceA <|-- "IInterfaceA`1"
 
 ![InheritanceRelationsips.png](https://github.com/pierre3/PlantUmlClassDiagramGenerator/blob/master/uml/InheritanceRelationsips.png)
 
-### Associations (from references of fields and properties)
+### Associations (from references of fields, properties and constructor parameters)
 
-If you specify the "createAssociation" option, object associations is created from field and property references.
+If you specify the "fields" option, object associations is created from field and property references.
+If you specify the "constrcutor" option, object associations is created from constructor parameter references.
 
 - C#
 
